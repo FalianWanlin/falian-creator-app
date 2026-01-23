@@ -6,18 +6,17 @@
   align-items: center;
   justify-content: center;
 
-  padding: 14px 18px;
+  padding: 14px 16px;
   min-height: 52px;
 
   background: rgba(255, 255, 255, 0.88);
-  border-radius: 22px; /* 不是膠囊，讓雲更自然 */
+  border-radius: 22px;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
 
   cursor: grab;
   user-select: none;
 }
 
-/* 雲的兩顆「泡泡」 */
 .cloud::before,
 .cloud::after {
   content: "";
@@ -25,7 +24,7 @@
   background: inherit;
   border-radius: 999px;
   box-shadow: inherit;
-  z-index: -1; /* 在本體後面 */
+  z-index: -1;
 }
 
 .cloud::before {
@@ -42,8 +41,8 @@
   top: -24px;
 }
 
-/* hover/active 可選（不是必須） */
 .cloud:active {
   cursor: grabbing;
   transform: translateY(1px);
 }
+
