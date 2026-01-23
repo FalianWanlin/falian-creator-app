@@ -62,7 +62,7 @@ export default function WorkbenchHome() {
     const m = new Map();
     for (const z of ZONES) m.set(z.id, z);
     return m;
-  }, []);
+}, [ZONES]);
 
   const [order, setOrder] = useState(ZONES.map((z) => z.id));
   const [draggingId, setDraggingId] = useState(null);
