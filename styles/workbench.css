@@ -1,0 +1,49 @@
+/* styles/workbench.css */
+
+.cloud {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 14px 18px;
+  min-height: 52px;
+
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 22px; /* 不是膠囊，讓雲更自然 */
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+
+  cursor: grab;
+  user-select: none;
+}
+
+/* 雲的兩顆「泡泡」 */
+.cloud::before,
+.cloud::after {
+  content: "";
+  position: absolute;
+  background: inherit;
+  border-radius: 999px;
+  box-shadow: inherit;
+  z-index: -1; /* 在本體後面 */
+}
+
+.cloud::before {
+  width: 34px;
+  height: 34px;
+  left: 18px;
+  top: -14px;
+}
+
+.cloud::after {
+  width: 46px;
+  height: 46px;
+  left: 42px;
+  top: -24px;
+}
+
+/* hover/active 可選（不是必須） */
+.cloud:active {
+  cursor: grabbing;
+  transform: translateY(1px);
+}
