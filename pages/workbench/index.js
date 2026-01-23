@@ -2,9 +2,18 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
-const STORAGE_KEY = "falian_workbench_cloud_order_v1";
+/**
+ * 視覺語義：
+ * - 天空藍背景
+ * - 雲朵漂浮在天空上（15 個，不含 AI Chat）
+ * - 中間 AI Chat 固定
+ * - 左右為角色 / 外掛 placeholder
+ */
 
-// Zone 定義（固定，不被 UI 改寫）
+const STORAGE_KEY = "falian_workbench_cloud_order_v1";
+const CHAT_ZONE_ID = "zone-11";
+
+// 16 區正式定義（原樣）
 const ZONES = [
   { id: "zone-1", label: "Creation Zone" },
   { id: "zone-2", label: "Review Zone" },
@@ -16,13 +25,15 @@ const ZONES = [
   { id: "zone-8", label: "Management Zone" },
   { id: "zone-9", label: "Legal & Governance Zone" },
   { id: "zone-10", label: "Safety & Verification Zone" },
-  { id: "zone-11", label: "AI Chat Zone" },
+  { id: "zone-11", label: "AI Chat Zone" }, // 固定中間
   { id: "zone-12", label: "Memory & History Zone" },
   { id: "zone-13", label: "Photo & Image Zone" },
   { id: "zone-14", label: "Multimedia Zone" },
   { id: "zone-15", label: "Network Zone" },
   { id: "zone-16", label: "Fun & Recharge Zone" },
 ];
+
+const CLOUD_ZONES = ZONES.filter((z) => z.id !== CHAT_ZONE_ID);
 
 function safeLoadOrder() {
   try {
@@ -37,104 +48,62 @@ function safeLoadOrder() {
 }
 
 function sanitizeOrder(order, zones) {
-  const validIds = new Set(zones.map((z) => z.id));
-  const unique = [];
-  const seen = new Set();
-
-  // 保留有效且不重複的 id
-  for (const id of order || []) {
-    if (validIds.has(id) && !seen.has(id)) {
-      unique.push(id);
-      seen.add(id);
-    }
+  const valid = zones.map((z) => z.id);
+  const result = order?.filter((id) => valid.includes(id)) || [];
+  for (const id of valid) {
+    if (!result.includes(id)) result.push(id);
   }
-
-  // 補齊缺少的 zone id（避免壞資料造成遺漏）
-  for (const z of zones) {
-    if (!seen.has(z.id)) unique.push(z.id);
-  }
-
-  return unique;
+  return result;
 }
 
 export default function WorkbenchHome() {
-  const zonesById = useMemo(() => {
-    const m = new Map();
-    for (const z of ZONES) m.set(z.id, z);
-    return m;
-}, [ZONES]);
-
-  const [order, setOrder] = useState(ZONES.map((z) => z.id));
+  const [order, setOrder] = useState(CLOUD_ZONES.map((z) => z.id));
   const [draggingId, setDraggingId] = useState(null);
 
-  // 初次載入：從 localStorage 讀取排序（只影響 UI）
   useEffect(() => {
-    const loaded = safeLoadOrder();
-    if (!loaded) return;
-    setOrder(sanitizeOrder(loaded, ZONES));
+    const saved = safeLoadOrder();
+    if (saved) setOrder(sanitizeOrder(saved, CLOUD_ZONES));
   }, []);
 
-  // 每次排序變動：寫回 localStorage
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(order));
-    } catch {
-      // 忽略寫入失敗（例如瀏覽器限制）
-    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(order));
   }, [order]);
 
-  const orderedZones = useMemo(() => {
-    return order.map((id) => zonesById.get(id)).filter(Boolean);
-  }, [order, zonesById]);
+  const zonesById = useMemo(() => {
+    const m = new Map();
+    CLOUD_ZONES.forEach((z) => m.set(z.id, z));
+    return m;
+  }, []);
 
-  function moveItem(fromId, toId) {
-    if (!fromId || !toId || fromId === toId) return;
+  const orderedZones = order.map((id) => zonesById.get(id));
 
+  function move(fromId, toId) {
+    if (fromId === toId) return;
     setOrder((prev) => {
       const next = [...prev];
-      const fromIndex = next.indexOf(fromId);
-      const toIndex = next.indexOf(toId);
-      if (fromIndex === -1 || toIndex === -1) return prev;
-
-      next.splice(fromIndex, 1);
-      next.splice(toIndex, 0, fromId);
+      const from = next.indexOf(fromId);
+      const to = next.indexOf(toId);
+      next.splice(from, 1);
+      next.splice(to, 0, fromId);
       return next;
     });
   }
 
-  function resetOrder() {
-    const defaultOrder = ZONES.map((z) => z.id);
-    setOrder(defaultOrder);
-  }
-
   return (
-    <div style={{ padding: 24 }}>
-      <h2>Workbench</h2>
-      <p>Select a zone to begin.</p>
-
-      <div style={{ marginTop: 12 }}>
-        <button
-          type="button"
-          onClick={resetOrder}
-          style={{
-            background: "#2a2a35",
-            border: "1px solid #3a3a45",
-            color: "#fff",
-            padding: "8px 12px",
-            borderRadius: 10,
-            cursor: "pointer",
-          }}
-        >
-          Reset cloud order
-        </button>
-      </div>
-
+    <div
+      style={{
+        minHeight: "100vh",
+        padding: 16,
+        background: "linear-gradient(#87CEEB, #E0F6FF)", // 天空藍
+      }}
+    >
+      {/* 天空中的雲 */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
           gap: 16,
-          marginTop: 24,
+          marginBottom: 24,
         }}
       >
         {orderedZones.map((zone) => (
@@ -143,39 +112,73 @@ export default function WorkbenchHome() {
             draggable
             onDragStart={(e) => {
               setDraggingId(zone.id);
-              e.dataTransfer.effectAllowed = "move";
               e.dataTransfer.setData("text/plain", zone.id);
             }}
-            onDragEnd={() => setDraggingId(null)}
-            onDragOver={(e) => {
-              // 必須 preventDefault 才能 drop
-              e.preventDefault();
-              e.dataTransfer.dropEffect = "move";
-            }}
+            onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
-              e.preventDefault();
               const fromId = e.dataTransfer.getData("text/plain");
-              moveItem(fromId, zone.id);
+              move(fromId, zone.id);
               setDraggingId(null);
             }}
             style={{
-              background: draggingId === zone.id ? "#333344" : "#2a2a35",
+              background: "rgba(255,255,255,0.85)",
               borderRadius: 999,
-              padding: "14px 12px",
+              padding: "14px 16px",
               textAlign: "center",
               cursor: "grab",
+              boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
               userSelect: "none",
             }}
-            title="Drag to reorder"
           >
             <Link
-             href={`/workbench/${zone.id}`}
-             style={{ color: "#8ab4ff", pointerEvents: draggingId ? "none" : "auto" }}
+              href={`/workbench/${zone.id}`}
+              style={{
+                color: "#1a3c5a",
+                fontWeight: 600,
+                pointerEvents: draggingId ? "none" : "auto",
+              }}
             >
               ☁️ {zone.label}
             </Link>
           </div>
         ))}
+      </div>
+
+      {/* 固定三欄 */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "240px 1fr 320px",
+          gap: 16,
+          background: "rgba(255,255,255,0.9)",
+          borderRadius: 16,
+          padding: 16,
+        }}
+      >
+        <aside>
+          <h3>Roles</h3>
+          <p>(角色選擇區)</p>
+        </aside>
+
+        <main>
+          <h3>AI Chat</h3>
+          <div
+            style={{
+              background: "#ffffff",
+              borderRadius: 12,
+              padding: 16,
+              minHeight: 400,
+              boxShadow: "inset 0 0 0 1px #e0e0e0",
+            }}
+          >
+            （固定對話框）
+          </div>
+        </main>
+
+        <aside>
+          <h3>Addons</h3>
+          <p>(外掛加掛區)</p>
+        </aside>
       </div>
     </div>
   );
