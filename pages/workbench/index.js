@@ -6,24 +6,23 @@ const STORAGE_KEY = "falian_workbench_cloud_order_v1";
 
 // Zone 定義（固定，不被 UI 改寫）
 const ZONES = [
-  { id: "zone-1", label: "Command Zone" },
-  { id: "zone-2", label: "Chat Zone" },
-  { id: "zone-3", label: "Writing Zone" },
-  { id: "zone-4", label: "Research Zone" },
-  { id: "zone-5", label: "Publishing Zone" },
-  { id: "zone-6", label: "Translation Zone" },
-  { id: "zone-7", label: "Image Zone" },
-  { id: "zone-8", label: "Video Zone" },
-  { id: "zone-9", label: "Audio/Music Zone" },
-  { id: "zone-10", label: "Brand Zone" },
-  { id: "zone-11", label: "Legal & Licensing Zone" },
-  { id: "zone-12", label: "Compliance & Responsibility Zone" },
-  { id: "zone-13", label: "Progress Tracker Zone" },
-  { id: "zone-14", label: "Asset Library Zone" },
-  { id: "zone-15", label: "Collaboration Zone" },
-  { id: "zone-16", label: "System Settings Zone" },
+  { id: "zone-1", label: "Creation Zone" },
+  { id: "zone-2", label: "Review Zone" },
+  { id: "zone-3", label: "Layout Zone" },
+  { id: "zone-4", label: "Proofreading Zone" },
+  { id: "zone-5", label: "Cover Zone" },
+  { id: "zone-6", label: "Integration Zone" },
+  { id: "zone-7", label: "Final Product Zone" },
+  { id: "zone-8", label: "Management Zone" },
+  { id: "zone-9", label: "Legal & Governance Zone" },
+  { id: "zone-10", label: "Safety & Verification Zone" },
+  { id: "zone-11", label: "AI Chat Zone" },
+  { id: "zone-12", label: "Memory & History Zone" },
+  { id: "zone-13", label: "Photo & Image Zone" },
+  { id: "zone-14", label: "Multimedia Zone" },
+  { id: "zone-15", label: "Network Zone" },
+  { id: "zone-16", label: "Fun & Recharge Zone" },
 ];
-
 
 function safeLoadOrder() {
   try {
