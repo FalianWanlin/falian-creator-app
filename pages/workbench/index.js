@@ -168,7 +168,10 @@ export default function WorkbenchHome() {
             }}
             title="Drag to reorder"
           >
-            <Link href={`/workbench/${zone.id}`} style={{ color: "#8ab4ff" }}>
+            <Link
+             href={`/workbench/${zone.id}`}
+             style={{ color: "#8ab4ff", pointerEvents: draggingId ? "none" : "auto" }}
+            >
               ☁️ {zone.label}
             </Link>
           </div>
