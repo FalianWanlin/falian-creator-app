@@ -1,3 +1,5 @@
+import "../styles/workbench.css";
+
 export default function MyApp({ Component, pageProps }) {
   return (
     <div style={{ fontFamily: "system-ui", background: "#0e0e11", color: "#fff", minHeight: "100vh" }}>
