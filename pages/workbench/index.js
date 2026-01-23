@@ -5,10 +5,25 @@ import { useEffect, useMemo, useState } from "react";
 const STORAGE_KEY = "falian_workbench_cloud_order_v1";
 
 // Zone 定義（固定，不被 UI 改寫）
-const ZONES = Array.from({ length: 16 }, (_, i) => ({
-  id: `zone-${i + 1}`,
-  label: `Zone ${i + 1}`,
-}));
+const ZONES = [
+  { id: "zone-1", label: "Command Zone" },
+  { id: "zone-2", label: "Chat Zone" },
+  { id: "zone-3", label: "Writing Zone" },
+  { id: "zone-4", label: "Research Zone" },
+  { id: "zone-5", label: "Publishing Zone" },
+  { id: "zone-6", label: "Translation Zone" },
+  { id: "zone-7", label: "Image Zone" },
+  { id: "zone-8", label: "Video Zone" },
+  { id: "zone-9", label: "Audio/Music Zone" },
+  { id: "zone-10", label: "Brand Zone" },
+  { id: "zone-11", label: "Legal & Licensing Zone" },
+  { id: "zone-12", label: "Compliance & Responsibility Zone" },
+  { id: "zone-13", label: "Progress Tracker Zone" },
+  { id: "zone-14", label: "Asset Library Zone" },
+  { id: "zone-15", label: "Collaboration Zone" },
+  { id: "zone-16", label: "System Settings Zone" },
+];
+
 
 function safeLoadOrder() {
   try {
