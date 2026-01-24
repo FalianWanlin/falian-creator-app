@@ -13,7 +13,7 @@ import { useEffect, useMemo, useState } from "react";
 const STORAGE_KEY = "falian_workbench_cloud_order_v1";
 const CHAT_ZONE_ID = "zone-11";
 
-// 16 區正式定義（你的官方版本）
+// 16 區正式定義
 const ZONES = [
   { id: "zone-1", label: "Creation Zone" },
   { id: "zone-2", label: "Review Zone" },
@@ -33,7 +33,7 @@ const ZONES = [
   { id: "zone-16", label: "Fun & Recharge Zone" },
 ];
 
-// 只有會漂浮的雲（排除 AI Chat）
+// 只有漂浮的雲（排除 AI Chat）
 const CLOUD_ZONES = ZONES.filter((z) => z.id !== CHAT_ZONE_ID);
 
 function safeLoadOrder() {
@@ -95,10 +95,10 @@ export default function WorkbenchHome() {
       style={{
         minHeight: "100vh",
         padding: 16,
-        background: "linear-gradient(#87CEEB, #E0F6FF)", // 天空藍
+        background: "linear-gradient(#87CEEB, #E0F6FF)",
       }}
     >
-      {/* 上方天空中的雲（15 個） */}
+      {/* 上方天空雲 */}
       <div
         style={{
           display: "grid",
@@ -138,7 +138,7 @@ export default function WorkbenchHome() {
         ))}
       </div>
 
-      {/* 固定三欄結構 */}
+      {/* 固定三欄 */}
       <div
         style={{
           display: "grid",
@@ -177,3 +177,4 @@ export default function WorkbenchHome() {
     </div>
   );
 }
+
