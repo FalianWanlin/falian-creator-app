@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 /**
  * 視覺語義：
  * - 天空藍背景
- * - 雲朵漂浮在天空上（15 個，不含 AI Chat）
+ * - 上方 15 個雲（可拖曳排序，不含 AI Chat）
  * - 中間 AI Chat 固定
  * - 左右為角色 / 外掛 placeholder
  */
@@ -13,7 +13,7 @@ import { useEffect, useMemo, useState } from "react";
 const STORAGE_KEY = "falian_workbench_cloud_order_v1";
 const CHAT_ZONE_ID = "zone-11";
 
-// 16 區正式定義（原樣）
+// 16 區正式定義（你的官方版本）
 const ZONES = [
   { id: "zone-1", label: "Creation Zone" },
   { id: "zone-2", label: "Review Zone" },
@@ -33,6 +33,7 @@ const ZONES = [
   { id: "zone-16", label: "Fun & Recharge Zone" },
 ];
 
+// 只有會漂浮的雲（排除 AI Chat）
 const CLOUD_ZONES = ZONES.filter((z) => z.id !== CHAT_ZONE_ID);
 
 function safeLoadOrder() {
@@ -97,7 +98,7 @@ export default function WorkbenchHome() {
         background: "linear-gradient(#87CEEB, #E0F6FF)", // 天空藍
       }}
     >
-      {/* 天空中的雲 */}
+      {/* 上方天空中的雲（15 個） */}
       <div
         style={{
           display: "grid",
@@ -120,15 +121,8 @@ export default function WorkbenchHome() {
               move(fromId, zone.id);
               setDraggingId(null);
             }}
-            style={{
-              background: "rgba(255,255,255,0.85)",
-              borderRadius: 999,
-              padding: "14px 16px",
-              textAlign: "center",
-              cursor: "grab",
-              boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
-              userSelect: "none",
-            }}
+            className="cloud"
+            style={{ textAlign: "center" }}
           >
             <Link
               href={`/workbench/${zone.id}`}
@@ -144,7 +138,7 @@ export default function WorkbenchHome() {
         ))}
       </div>
 
-      {/* 固定三欄 */}
+      {/* 固定三欄結構 */}
       <div
         style={{
           display: "grid",
